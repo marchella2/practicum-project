@@ -73,21 +73,20 @@ void inputBuku() {
 
 
 void tampilkanHistory() {
-    if (jumlahBuku == 0) {
-        printf("Tidak ada buku yang diinput.\n");
+    if (jumlahHistory == 0) {
+        printf("Tidak ada history transaksi.\n");
         return;
     }
 
-    printf("\nHistory Buku yang Pernah Diinput:\n");
-    printf("Index %-30s %-15s %-10s\n", "Nama", "Jenis", "Harga");
-    printf("-------------------------------------------------------------------\n");
-
-    for (int i = 0; i < jumlahBuku; i++) {
-        printf("%5d %-30s %-15s %d\n",
+    printf("\nHistory Transaksi:\n");
+    printf("Index %-30s %-10s %-10s\n", "Nama Buku", "Jumlah", "Total");
+    printf("--------------------------------------------------------\n");
+    for (int i = 0; i < jumlahHistory; i++) {
+        printf("%5d %-30s %-10d %d\n",
                i + 1,
-               daftarBuku[i].nama,
-               daftarBuku[i].jenis,
-               daftarBuku[i].harga);
+               daftarHistory[i].nama,
+               daftarHistory[i].jumlah,
+               daftarHistory[i].total);
     }
 }
 
@@ -134,6 +133,41 @@ void tampilkanDataBuku() {
     }
 }
 
+void transaksi() {
+    if (jumlahBuku == 0) {
+        printf("Tidak ada buku untuk ditransaksikan.\n");
+        return;
+    }
+
+    tampilkanDataBuku();
+
+    int index, jumlah;
+    printf("Masukkan index buku yang ingin dibeli: ");
+    scanf("%d", &index);
+
+    if (index < 1 || index > jumlahBuku) {
+        printf("Index tidak valid.\n");
+        return;
+    }
+
+    printf("Masukkan jumlah buku yang ingin dibeli: ");
+    scanf("%d", &jumlah);
+
+    if (jumlah <= 0) {
+        printf("Jumlah tidak valid.\n");
+        return;
+    }
+
+    // Simpan ke history
+    strcpy(daftarHistory[jumlahHistory].nama, daftarBuku[index - 1].nama);
+    daftarHistory[jumlahHistory].jumlah = jumlah;
+    daftarHistory[jumlahHistory].total = jumlah * daftarBuku[index - 1].harga;
+    jumlahHistory++;
+
+    printf("Transaksi berhasil disimpan!\n");
+}
+
+
 void deleteHistory() {
     tampilkanHistory();
     int index;
@@ -147,8 +181,9 @@ void deleteHistory() {
         daftarHistory[i] = daftarHistory[i + 1];
     }
     jumlahHistory--;
-    printf("Data Successfully delete..\n");
+    printf("Data history berhasil dihapus.\n");
 }
+
 
 
 
@@ -195,6 +230,7 @@ int main() {
         printf("4. Delete History\n");
         printf("5. Delete Buku\n");
         printf("6. Exit\n");
+        printf("7. Transaksi\n");
         printf("Pilihan Anda: ");
         scanf("%d", &pilihan);
 
@@ -217,6 +253,9 @@ int main() {
             case 6:
                 simpanKeFile(); // Simpan semua data ke file sebelum keluar
                 printf("Data disimpan. Terima kasih!\n");
+                break;
+             case 7:
+                transaksi(); // Simpan semua data ke file sebelum keluar
                 break;
             default:
                 printf("Pilihan tidak tersedia.\n");
