@@ -11,8 +11,18 @@ typedef struct {
     int harga;
 } Buku;
 
+// Struktur untuk menyimpan data history
+typedef struct {
+    char nama[100];
+    int jumlah;
+    int total;
+} History;
+
+
 Buku daftarBuku[MAX]; // Array untuk menyimpan daftar buku
+History daftarHistory[MAX]; // Array untuk menyimpan daftar history buku
 int jumlahBuku = 0;   // Counter jumlah buku yang tersimpan saat ini
+int jumlahHistory = 0; // Counter jumlah history yang tersimpan saat ini
 
 // Fungsi untuk menyimpan semua data buku ke file databuku.txt
 void simpanKeFile() {
@@ -61,6 +71,27 @@ void inputBuku() {
     printf("Buku berhasil ditambahkan!\n");
 }
 
+
+void tampilkanHistory() {
+    if (jumlahBuku == 0) {
+        printf("Tidak ada buku yang diinput.\n");
+        return;
+    }
+
+    printf("\nHistory Buku yang Pernah Diinput:\n");
+    printf("Index %-30s %-15s %-10s\n", "Nama", "Jenis", "Harga");
+    printf("-------------------------------------------------------------------\n");
+
+    for (int i = 0; i < jumlahBuku; i++) {
+        printf("%5d %-30s %-15s %d\n",
+               i + 1,
+               daftarBuku[i].nama,
+               daftarBuku[i].jenis,
+               daftarBuku[i].harga);
+    }
+}
+
+
 // Fungsi untuk membaca data buku dari file databuku.txt ke array
 void loadBuku() {
     FILE *file = fopen("databuku.txt", "r"); // Buka file untuk dibaca
@@ -103,6 +134,24 @@ void tampilkanDataBuku() {
     }
 }
 
+void deleteHistory() {
+    tampilkanHistory();
+    int index;
+    printf("Masukkan index history yang ingin dihapus: ");
+    scanf("%d", &index);
+    if (index < 1 || index > jumlahHistory) {
+        printf("Index tidak valid.\n");
+        return;
+    }
+    for (int i = index - 1; i < jumlahHistory - 1; i++) {
+        daftarHistory[i] = daftarHistory[i + 1];
+    }
+    jumlahHistory--;
+    printf("Data Successfully delete..\n");
+}
+
+
+
 // Fungsi untuk menghapus buku berdasarkan index
 void hapusBuku() {
     if (jumlahBuku == 0) {
@@ -141,9 +190,9 @@ int main() {
     do {
         printf("\n===== MENU =====\n");
         printf("1. Input Buku\n");
-        printf("2. View History (belum diimplementasi)\n");
+        printf("2. View History \n");
         printf("3. View Buku\n");
-        printf("4. Delete History (belum diimplementasi)\n");
+        printf("4. Delete History\n");
         printf("5. Delete Buku\n");
         printf("6. Exit\n");
         printf("Pilihan Anda: ");
@@ -154,13 +203,13 @@ int main() {
                 inputBuku(); // Tambah buku baru
                 break;
             case 2:
-                printf("Fitur View History belum diimplementasi.\n");
+                tampilkanHistory(); // Tampilkan history
                 break;
             case 3:
                 tampilkanDataBuku(); // Tampilkan daftar buku
                 break;
             case 4:
-                printf("Fitur Delete History belum diimplementasi.\n");
+                deleteHistory(); //Hapus history
                 break;
             case 5:
                 hapusBuku(); // Hapus buku berdasarkan index
